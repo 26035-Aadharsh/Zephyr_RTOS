@@ -1,0 +1,68 @@
+/**
+ * Measure Acceleration using a MPU 6050 Accelerometer Sensor :
+ * 	1. MPU 6050 Sensor is Powered by a GPIO, and can be Turned-Off using a Button Press,
+ *	2. A Button is Connected and is Used to Toggle the MPU 6050 ON and OFF,
+ *	3. If Turned On, the MPU 6050 Evaluates Acceleration Every 2s.
+ *	Learnings:
+ *		I2C Integration (GPIO 21, 22),
+ *		Power Management using a GPIO Toggle,
+ *		Toggle ON and OFF a LED using GPIO...
+ */
+
+/ {
+	aliases {
+		accelerometer = &mpu6050;
+	};
+
+	/* Button to Turn MPU 6050 ON and OFF */
+	buttons {
+		compatible = "gpio-keys";
+		status = "okay";
+
+		btn_0: btn_0 {
+			gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+			label = "Power Toggle Button";
+		};
+	};
+
+	/* LED to Display State of MPU 6050 */
+	leds {
+		compatible = "gpio-leds";
+		status = "okay";
+
+		led_0: led_0 {
+			gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
+			label = "Status LED";
+		};
+	};
+};
+
+/**
+ * Note: **ESP32 Dev Kit C** Common Board *.dtsi defines the Pin Ctrl and I2C Controller Nodes.
+ * Therefore, They are re-referenced as a phandle using the & specifier and not included in the Root of the Overlay DTS file.
+ */
+
+/* Configure the Pin Control for I2C0 Bus */
+&pinctrl {
+	i2c0_default: i2c0_default {
+		group1 {
+			pinmux = <I2C0_SDA_GPIO21>, <I2C0_SCL_GPIO22>;
+			bias-pull-up;
+			drive-open-drain;
+		};
+	};
+};
+
+/* Attach the MPU6050 to the actual I2C0 Controller Bus */
+&i2c0 {
+	status = "okay";
+	pinctrl-0 = <&i2c0_default>;
+	pinctrl-names = "default";
+
+	mpu6050: mpu6050@68 {
+		compatible = "invensense,mpu6050";
+		reg = <0x68>; /* default MPU 6050 I2C target address it can also be configured to the address 0x69 by connecting the AD0 pin */
+		int-gpios = <&gpio0 16 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
+};

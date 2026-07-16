@@ -1,0 +1,23 @@
+/ {
+	aliases {
+		external-led = &led_0;
+		interrupt-btn = &btn_0;
+	};
+
+	leds {
+		status = "okay";
+		compatible = "gpio-leds";
+		led_0:led-0 {
+			gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	buttons {
+		/* used in IRQ mode as polling mode option is not enabled */
+		status = "okay";
+		compatible = "gpio-keys";
+		btn_0:btn-0 {
+			gpios = <&gpio0 16 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+		};
+	};
+};

@@ -1,0 +1,12 @@
+/ {
+
+};
+
+&pinctrl {}
+
+&ledc0{
+	status = "okay";
+	channel1:channel@1{
+
+	};
+};

@@ -53,3 +53,9 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# VS Code Internal Settings
+.vscode/
+
+# Zephyr Build Folders
+build/

@@ -1,0 +1,23 @@
+/ {
+	aliases{
+		ctrl-uart = &uart1;
+	};
+};
+
+&pinctrl{
+	uart1_default:uart1_default{
+		group1{
+			pinmux = <UART1_TX_GPIO16>, <UART1_RX_GPIO17>;
+			bias-pull-up;
+		};
+	};
+};
+
+&uart1{
+	status = "okay";
+	pinctrl-0 = <&uart1_default>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+	uhci-slip-tx;
+	uhci-slip-rx;
+};

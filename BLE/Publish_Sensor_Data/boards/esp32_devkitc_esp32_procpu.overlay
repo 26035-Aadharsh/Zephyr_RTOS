@@ -1,0 +1,50 @@
+#include <zephyr/dt-bindings/sensor/adxl345.h>
+
+/ {
+	aliases {
+		accelerometer = &adxl345;
+	};
+};
+
+&pinctrl {
+	/* Create Nodes for I2C Pin Control */
+	i2c0_default:i2c0_default {
+		/* zephyr\include\zephyr\dt-bindings\pinctrl\esp32-pinctrl.h */
+		group1 {
+			pinmux = <I2C0_SCL_GPIO22>, <I2C0_SDA_GPIO21>;
+			bias-pull-up;
+		};
+	};
+};
+
+/* i2c0 Node, connected to ADXL 345 accelerometer */
+&i2c0 {
+	compatible = "espressif,esp32-i2c";
+	status = "okay";
+
+	/* Configure Pin Controller to Control the i2c0 Node */
+	pinctrl-0 = <&i2c0_default>;
+	pinctrl-names = "default";
+
+	/* Device on the I2C Bus of an ESP32 Dev-Kit C */
+	adxl345:adxl345@53 {
+		compatible = "adi,adxl345";
+		friendly-name = "aadharsh 3 - axis accelerometer";
+		/* Default Address on Bus for ADXL 345 */
+		reg = <0x53>;
+
+		range = <ADXL345_DT_RANGE_8G>;
+		odr = <ADXL345_DT_ODR_25>;
+
+		fifo-watermark = <31>;
+		/* Refer to GPIO Header in `dt-bindings\gpio.h` and not from the `drivers\gpio.h` */
+		int1-gpios = <&gpio0 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+	};
+};
+
+/* Enable HCI for BLE : BLE is a Integrated Chip in the ESP 32 Module */
+&esp32_bt_hci {
+	compatible = "espressif,esp32-bt-hci";
+	bt-hci-vs-ext;
+	status = "okay";
+};

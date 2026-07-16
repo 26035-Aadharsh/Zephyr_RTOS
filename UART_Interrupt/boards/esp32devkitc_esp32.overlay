@@ -1,0 +1,22 @@
+/ {
+	aliases{
+		ctrl-uart = &uart1;
+	};
+};
+
+&pinctrl{
+	uart1_default:uart1_default{
+		group1{
+			pinmux = <UART1_RX_GPIO16 ESP32_PINMUX(16, ESP_U1RXD_IN, ESP_NOSIG)>,
+			<UART1_TX_GPIO17 ESP32_PINMUX(17, ESP_NOSIG, ESP_U1TXD_OUT)>;
+			bias-pull-up;
+		};
+	};
+};
+
+&uart1{
+	status = "okay";
+	pinctrl-0 = <&uart1_default>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+};
